@@ -19,7 +19,7 @@ Module FileWriter
 	Function GetFiles(toSearch)
 
 		Dim directories as String() = Directory.GetDirectories(Convert.toString(toSearch)) ' Array of all the different directories in specific folder' TODO find workaround to Convert.toString
-		Dim allFiles as String() = {"0"} ' Array of all the different files in a given directory. Uninitialized'
+		Dim allFiles as String() ' Array of all the different files in a given directory. TODO remove need to initialize
 		Dim files as String() = {"0"} ' Temporary array that has the files within one specific directory'
 		Dim numDirectories as Integer = directories.Length
 		Dim searches as Integer = 0 ' Loop control variable.'
@@ -27,10 +27,14 @@ Module FileWriter
 
 		for searches = 0 To numDirectories - 1 ' Searches all the directories in the directories array. - 1 b/c otherwise it overflows
 			files = Directory.GetFiles(directories(searches), "*.html") ' Looks for .html files'
-			allFiles = allFiles.Union(files).ToArray() ' Concatonates the temporary files array to the allFiles array'``
+			if searches = 0 Then
+				allFiles = files ' FIXME don't let the compiler think that it isn't actually initialzed here.
+			else
+				allFiles = allFiles.Union(files).ToArray() ' Concatonates the temporary files array to the allFiles array'``
+			end if
 		next
 
-		return files
+		return allFiles
 
 	end Function
 
