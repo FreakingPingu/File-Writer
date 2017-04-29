@@ -5,28 +5,29 @@ Imports System.IO
 Module FileWriter
 
 	Sub Main() ' TODO make private'
-		Dim directory as String = "I:\Projects\Github\file_writer\test_folders" ' TODO consider defaulting to current directory when used on command line'
+
+		Dim toSearch as String = "D:\Projects\Github\file_writer\test_folders" ' TODO consider defaulting to current directory if no input'
 		Dim lineNum as Integer = 5 ' TODO allow for user input on the command line'
 		Dim toWrite as String = "Test" & VbCrLf & "Test 2" ' TODO same as above'
 		Dim files as String()
 
-		files = GetFiles(directory)
+		files = GetFiles(toSearch)
 		WriteFiles(files, lineNum, toWrite)
 
 	end Sub
 
-	Function GetFiles(directory)
+	Function GetFiles(toSearch)
 
-		Dim directories as String() = Directory.GetDirectories(directory) ' Array of all the different directories in this specific folder'
+		Dim directories as String() = Directory.GetDirectories(Convert.toString(toSearch)) ' Array of all the different directories in specific folder' TODO find workaround to Convert.toString
 		Dim allFiles as String() = {"0"} ' Array of all the different files in a given directory. Uninitialized'
 		Dim files as String() = {"0"} ' Temporary array that has the files within one specific directory'
 		Dim numDirectories as Integer = directories.Length
 		Dim searches as Integer = 0 ' Loop control variable.'
 
 
-		for searches = 0 To numDirectories - 1 ' Searches all the directories in the directories array'
+		for searches = 0 To numDirectories - 1 ' Searches all the directories in the directories array. - 1 b/c otherwise it overflows
 			files = Directory.GetFiles(directories(searches), "*.html") ' Looks for .html files'
-			allFiles = allFiles.Union(files).ToArray() ' Concatonates the temporary files array to the allFiles array'
+			allFiles = allFiles.Union(files).ToArray() ' Concatonates the temporary files array to the allFiles array'``
 		next
 
 		return files
@@ -44,7 +45,7 @@ Module FileWriter
 	end Sub
 
 	Private Sub AppendAtPosition(ByVal ltFilePath As String, ByVal liAppendLine As Integer, ByVal ltAppendLine As String) ' Prewritten code. Does the file writting'
-
+		'TODO when it finds the right line, save the rest of the file so it isn't deleted when text is appended. Then reappend the saved text
 		Dim ltFileContents As String = ""
 		Dim lReader As StreamReader = New StreamReader(ltFilePath)
 		Dim liRow As Integer = 0
@@ -60,8 +61,10 @@ Module FileWriter
 
 		If liAppendLine >= liRow Then
 			ltFileContents &= ltAppendLine
-			End If
-		File.WriteAllText(ltFilePath, ltFileContents)
+		End If
+
+
+		File.WriteAllText(ltFilePath, ltFileContents) ' FIXME this lime here crashes it. Supposedly it is being accessed by another process. (Something in the code?)'
 
 	End Sub
 
