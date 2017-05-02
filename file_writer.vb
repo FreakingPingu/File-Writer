@@ -6,15 +6,31 @@ Module FileWriter
 
 	Sub Main() ' TODO make private'
 
-		Dim toSearch as String = "I:\Projects\Github\file_writer\test_folders" ' TODO consider defaulting to current directory if no input'
-		Dim lineNum as Integer = 5 ' TODO allow for user input on the command line'
-		Dim toWrite as String = "Test" & VbCrLf & "Test 2" ' TODO same as above'
+		Dim toSearch as String = InputBox("Enter the directory to search", "Directory Path")
+		Dim lineNum as Integer = InputBox("Enter the line number", "Line Number") ' TODO allow for user input on the command line'
+		Dim toWritePath as String = InputBox("Enter the path for the text to add", "File Path")
+		Dim toWrite as String = GetToWrite(toWritePath)
 		Dim files as String()
 
 		files = GetFiles(toSearch)
 		WriteFiles(files, lineNum, toWrite)
 
 	end Sub
+
+	Function GetToWrite(ByVal ltFilePath as String)
+
+		Dim ltFileContents as String = ""
+		Dim lReader as StreamReader = New StreamReader(ltFilePath)
+
+		While Not lReader.EndOfStream ' Searches for line until end of file'
+			ltFileContents &= lReader.ReadLine
+			ltFileContents &= VbCrLf
+		End While
+
+		lReader.close()
+		return ltFileContents
+
+	end Function
 
 	Function GetFiles(ByVal toSearch as String)
 
@@ -58,7 +74,7 @@ Module FileWriter
 			If liRow = liAppendLine Then ' Appends text at the specified line'
 				ltFileContents &= ltToAppend
 			end if
-			
+
 			ltFileContents &= VbCrLf
   			liRow += 1
 		End While
