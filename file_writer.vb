@@ -63,6 +63,7 @@ Module FileWriter
 
 	end Sub
 
+	' This method was taken from https://stackoverflow.com/questions/15900225
 	Private Sub AppendAtPosition(ByRef ltFilePath As String, ByVal liAppendLine As Integer, ByVal ltToAppend As String)
 
 		Dim ltFileContents As String = ""
